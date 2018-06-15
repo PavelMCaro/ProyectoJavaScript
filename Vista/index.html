@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SISTEMA WEB PRUEBA</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta charset="utf-8" />
+  
+  <link rel="stylesheet" href="../style/Estilo.css">
+  <link rel="stylesheet" href="dist/sweetalert.css">
+
+</head>
+<body>
+
+<div class="card">
+	<div class="container">
+	<h2>Ingreso de Números</h2>
+
+	  <div class="form-group">
+	    
+	    <input id="spNumero" type="text" maxlength="5" onKeyPress="return soloNumeros(event)"  placeholder="Ingrese número">
+
+	  </div>
+
+		 <div>
+		  <button type="submit" id="btnGuardar" class="btn btn-primary">Guardar Número</button>
+		 </div>
+		 <div>
+		  <button type="submit" id="btnListar" class="btn btn-primary">Listar Número(s)</button>
+		 </div>
+		  <div>
+		  <button type="submit" id="btnOrdenar" class="btn btn-primary">Ordenar Ascendentemente</button>
+		  </div>
+		  <div>
+		  <button type="submit" id="btnLimpiar" class="btn btn-primary">Limpiar datos</button>
+		  </div>
+		<div>
+		<textarea id="myTextarea"></textarea>
+		</div>
+
+	</div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+
+	var numero; //Variable para almacenar el valor del número ingresado
+
+	var arreglonumeros = []; //Array que contiene el conjunto de números ingresados
+
+	var textarea = document.getElementById("myTextarea");	//Variable que captura el id del TextArea
+
+	var registrar; //Variable usada para poder almacenar en el array el número ingresado No Registrar=0, Registrar = 1
+
+	Iniciar();
+
+	/**Acción usada para almacenar en un arreglo los números ingresados, validando que no reciba un dato vacío**/
+	$('#btnGuardar').on('click', function () {
+
+		if($('#spNumero').val()==""){
+			swal("Número no ingresado","Por favor ingresar número","info");
+			return;
+		}else{ 
+				registrar=0;
+				numero = parseInt($('#spNumero').val());
+				
+			if(arreglonumeros.length==0){
+				registrar = 1
+				}else{
+					if(arreglonumeros.length>0){
+						for(var i=0;i<arreglonumeros.length;i++){
+							if(arreglonumeros[i]==numero){
+									swal("Número duplicado","El número ingresado ya existe, por favor ingresar nuevamente otro número","info");
+								
+									registrar=0;	
+									$('#spNumero').val('');
+									$('#spNumero').focus();
+									return;
+															
+							}else{
+									registrar=1;
+							}
+						}
+					}else{
+						return;
+					}
+				}
+			
+			if(registrar==1){
+				arreglonumeros.push(numero);
+				$('#spNumero').val('');
+				$('#spNumero').focus();
+				registrar=0;
+			}
+		}
+	});
+
+	/**Acción que lista el conjunto de números almacenados en el array**/
+	$('#btnListar').on('click', function () {
+
+		textarea.value = arreglonumeros.join("\n");
+	}); 
+
+	/**Acción que ordena ascendentemente el conjunto de números almacenados en el array**/
+	$('#btnOrdenar').on('click', function () {
+		Ordenar(arreglonumeros);
+		textarea.value = arreglonumeros.join("\n");
+	}); 
+
+	/**Acción que borra los números almacenados en el array; así como también los números mostrados en el TextÁrea**/
+	$('#btnLimpiar').on('click', function (){
+		arreglonumeros.length=0;
+		$('#myTextarea').val('');
+	});
+
+	/**Función que inicializa el sistema limpiando los valores de los campos y el textarea*/
+	function Iniciar(){
+		$('#spNumero').val('');
+		$('#myTextarea').val('');
+		$('#spNumero').focus();
+	}
+
+	/**Función usada para ordenar un arreglo de menor a mayor**/
+	function Ordenar(arreglo){
+		var aux;
+
+		for (var i=0;i<arreglo.length;i++){
+			for(var j=i+1;j<arreglo.length;j++){
+				if(arreglo[i]>arreglo[j]){
+					aux=arreglo[i];
+					arreglo[i]=arreglo[j];
+					arreglo[j]=aux;
+				}
+			}
+		}
+		return arreglo;	
+	}
+
+	/**Función que valida el ingreso solamente de números**/
+	function soloNumeros(e) {
+        var key = window.Event ? e.which : e.keyCode
+        return ((key >= 48 && key <= 57) || (key == 8))
+    }
+
+</script> 
+</html> 			
